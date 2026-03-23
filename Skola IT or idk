@@ -1,0 +1,41 @@
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+
+databaza = {"students": [{"id": 1, "name": "Rastislav", "surname": "Paták", "nickname": "Kašlík"},
+                         {"id": 2, "name": "Daniel", "surname": "Barta", "nickname": "Bart"},
+                         {"id": 21, "name": "Samuel", "surname": "Martiš", "nickname": "Žukva"},
+                         {"id": 3, "name": "Matej", "surname": "Randziak", "nickname": "Šprt"},
+                         {"id": 4, "name": "Martin", "surname": "Deglovič", "nickname": " "},
+                         {"id": 5, "name": "Dávid", "surname": "Škula", "nickname": " "},
+                         {"id": 6, "name": "Karolína", "surname": "Kmeťová", "nickname": " "},
+                         {"id": 7, "name": "Matúš", "surname": "Bucko", "nickname": " "},
+                         {"id": 8, "name": "Janka", "surname": "Vargová", "nickname": " "},
+                         {"id": 9, "name": "Samuel", "surname": "Harring", "nickname": " "},
+                         {"id": 10, "name": "Martin", "surname": "Jelínek", "nickname": " "},
+                         {"id": 11, "name": "Milan", "surname": "Kokina", "nickname": " "},
+                         {"id": 12, "name": "Patrik", "surname": "Korba", "nickname": " "},
+                         {"id": 13, "name": "Samuel", "surname": "Uhrík", "nickname": " "},
+                         {"id": 14, "name": "Marko", "surname": "Mihalička", "nickname": " "},
+                         {"id": 15, "name": "Matúš", "surname": "Holečka", "nickname": " "},
+                         {"id": 16, "name": "Tomáš", "surname": "Jurčak", "nickname": " "},
+                         {"id": 17, "name": "Adrián", "surname": "Červenka", "nickname": " "},
+                         {"id": 18, "name": "Marcus", "surname": "Martiš", "nickname": " "},
+                         {"id": 19, "name": "Lukáš", "surname": "Vindiš", "nickname": " "},
+                         ]}
+
+
+
+@app.route("/api")
+def api():
+    return jsonify(databaza)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+@app.route('/api/student/<int:student_id>')
+def find_student(student_id):
+    student = databaza["students"][student_id]
+    return jsonify(student)
