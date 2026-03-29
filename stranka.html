@@ -1,13 +1,12 @@
-<!DOCTYPE html>
-<html lang="sk">
-<head>
-    <meta charset="UTF-8">
-    <title>Študenti</title>
     <style>
         body {
-            font-family: Arial;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
             text-align: center;
+        }
+
+        h1 {
+            margin-top: 20px;
         }
 
         .container {
@@ -16,12 +15,12 @@
             justify-content: center;
         }
 
-        .student {
+        .card {
             background: white;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 10px;
             width: 200px;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
@@ -31,35 +30,42 @@
         }
     </style>
 </head>
+
 <body>
 
-    <h1>Zoznam študentov</h1>
-    <button onclick="loadStudents()">Načítať študentov</button>
+<h1>Zoznam študentov</h1>
 
-    <div class="container" id="students"></div>
+<div class="container" id="students"></div>
 
-    <script>
-        async function loadStudents() {
+<script>
+    async function loadStudents() {
+        try {
             const response = await fetch("http://127.0.0.1:5000/api");
             const data = await response.json();
 
             const container = document.getElementById("students");
-            container.innerHTML = "";
 
             data.students.forEach(student => {
                 const div = document.createElement("div");
-                div.className = "student";
+                div.className = "card";
 
                 div.innerHTML = `
-                    <img src="${student.image}" alt="foto">
+                    <img src="${student.image}">
                     <h3>${student.name} ${student.surname}</h3>
-                    <p>Prezývka: ${student.nickname}</p>
+                    <p>${student.nickname}</p>
                 `;
 
                 container.appendChild(div);
             });
+
+        } catch (error) {
+            console.error("Chyba:", error);
         }
-    </script>
+    }
+
+    // načíta automaticky po otvorení stránky
+    loadStudents();
+</script>
 
 </body>
 </html>
