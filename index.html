@@ -1,95 +1,60 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <title>Študenti</title>
+<meta charset="UTF-8">
+<title>Študenti</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f2f5;
-            text-align: center;
-        }
+<style>
+body {
+    font-family: Arial;
+    background: #f0f2f5;
+    text-align: center;
+}
 
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 
-        .card {
-            background: white;
-            width: 220px;
-            margin: 10px;
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: 0.2s;
-            cursor: pointer;
-        }
+.card {
+    background: white;
+    width: 220px;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+}
 
-        .card:hover {
-            transform: scale(1.05);
-        }
+.chat {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+}
 
-        img {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        button {
-            padding: 10px 15px;
-            margin: 5px;
-            border: none;
-            border-radius: 8px;
-            background: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #0056b3;
-        }
-
-        /* CHAT */
-        .chat {
-            display: none;
-            position: fixed;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            padding: 15px;
-        }
-
-        .messages {
-            height: 150px;
-            overflow-y: auto;
-            text-align: left;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            padding: 5px;
-            border-radius: 8px;
-        }
-
-        .close {
-            background: red;
-        }
-    </style>
+.messages {
+    height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    text-align: left;
+}
+</style>
 </head>
 
 <body>
 
 <h1>Zoznam študentov</h1>
-
 <button onclick="loadStudents()">Načítať študentov</button>
 
 <div class="container" id="students"></div>
 
-<!-- CHAT OKNO -->
 <div class="chat" id="chat">
     <h3 id="chatName"></h3>
 
@@ -100,75 +65,74 @@
     <button onclick="sendMessage('Dovidenia!')">Dovidenia!</button>
 
     <br><br>
-    <button class="close" onclick="closeChat()">Zavrieť</button>
+    <button onclick="closeChat()">Zavrieť</button>
 </div>
 
 <script>
-    const API_URL = "https://backend-8lo7.onrender.com/api";
+const STUDENT_API = "https://backend-8lo7.onrender.com/api";
+const CHAT_API = "http://localhost:3000/chat";
 
-    let currentStudent = null;
+let currentStudent = null;
 
-    async function loadStudents() {
-        const container = document.getElementById("students");
-        container.innerHTML = "Načítavam...";
+async function loadStudents() {
+    const res = await fetch(STUDENT_API);
+    const data = await res.json();
 
-        try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
+    const container = document.getElementById("students");
+    container.innerHTML = "";
 
-            container.innerHTML = "";
+    data.students.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "card";
 
-            data.students.forEach(student => {
-                const div = document.createElement("div");
-                div.className = "card";
+        div.innerHTML = `
+            <img src="${s.image}" width="100%">
+            <h3>${s.name} ${s.surname}</h3>
+        `;
 
-                div.innerHTML = `
-                    <img src="${student.image}">
-                    <h3>${student.name} ${student.surname}</h3>
-                    <p><b>Prezývka:</b> ${student.nickname || "-"}</p>
-                `;
+        div.onclick = () => openChat(s);
+        container.appendChild(div);
+    });
+}
 
-                // 🔥 KLIK NA ŠTUDENTA
-                div.onclick = () => openChat(student);
+function openChat(student) {
+    currentStudent = student;
+    document.getElementById("chat").style.display = "block";
+    document.getElementById("chatName").innerText =
+        student.name + " " + student.surname;
+    document.getElementById("messages").innerHTML = "";
+}
 
-                container.appendChild(div);
-            });
+function closeChat() {
+    document.getElementById("chat").style.display = "none";
+}
 
-        } catch (error) {
-            container.innerHTML = "❌ Nepodarilo sa načítať dáta";
-            console.error(error);
-        }
-    }
+async function sendMessage(text) {
+    const messages = document.getElementById("messages");
 
-    function openChat(student) {
-        currentStudent = student;
-        document.getElementById("chat").style.display = "block";
-        document.getElementById("chatName").innerText =
-            student.name + " " + student.surname;
+    const myMsg = document.createElement("div");
+    myMsg.innerText = "Ty: " + text;
+    messages.appendChild(myMsg);
 
-        document.getElementById("messages").innerHTML = "";
-    }
+    const res = await fetch(CHAT_API, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: text,
+            student: currentStudent.name
+        })
+    });
 
-    function closeChat() {
-        document.getElementById("chat").style.display = "none";
-    }
+    const data = await res.json();
 
-    function sendMessage(text) {
-        const messages = document.getElementById("messages");
+    const botMsg = document.createElement("div");
+    botMsg.innerText = currentStudent.name + ": " + data.reply;
+    messages.appendChild(botMsg);
 
-        const msg = document.createElement("div");
-        msg.innerText = "Ty: " + text;
-
-        messages.appendChild(msg);
-        messages.scrollTop = messages.scrollHeight;
-
-        // fake odpoveď
-        setTimeout(() => {
-            const reply = document.createElement("div");
-            reply.innerText = currentStudent.name + ": 👍";
-            messages.appendChild(reply);
-        }, 500);
-    }
+    messages.scrollTop = messages.scrollHeight;
+}
 </script>
 
 </body>
