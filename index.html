@@ -11,10 +11,6 @@
             text-align: center;
         }
 
-        h1 {
-            margin: 20px;
-        }
-
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -29,6 +25,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: 0.2s;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -41,8 +38,8 @@
         }
 
         button {
-            padding: 10px 20px;
-            margin: 15px;
+            padding: 10px 15px;
+            margin: 5px;
             border: none;
             border-radius: 8px;
             background: #007bff;
@@ -52,6 +49,34 @@
 
         button:hover {
             background: #0056b3;
+        }
+
+        /* CHAT */
+        .chat {
+            display: none;
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 15px;
+        }
+
+        .messages {
+            height: 150px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .close {
+            background: red;
         }
     </style>
 </head>
@@ -64,8 +89,24 @@
 
 <div class="container" id="students"></div>
 
+<!-- CHAT OKNO -->
+<div class="chat" id="chat">
+    <h3 id="chatName"></h3>
+
+    <div class="messages" id="messages"></div>
+
+    <button onclick="sendMessage('Ahoj!')">Ahoj!</button>
+    <button onclick="sendMessage('Ako sa máš?')">Ako sa máš?</button>
+    <button onclick="sendMessage('Dovidenia!')">Dovidenia!</button>
+
+    <br><br>
+    <button class="close" onclick="closeChat()">Zavrieť</button>
+</div>
+
 <script>
-    const API_URL = "https://backend-8lo7.onrender.com/api"; // 🔥 TU DÁŠ SVOJ BACKEND
+    const API_URL = "https://backend-8lo7.onrender.com/api";
+
+    let currentStudent = null;
 
     async function loadStudents() {
         const container = document.getElementById("students");
@@ -87,6 +128,9 @@
                     <p><b>Prezývka:</b> ${student.nickname || "-"}</p>
                 `;
 
+                // 🔥 KLIK NA ŠTUDENTA
+                div.onclick = () => openChat(student);
+
                 container.appendChild(div);
             });
 
@@ -94,6 +138,36 @@
             container.innerHTML = "❌ Nepodarilo sa načítať dáta";
             console.error(error);
         }
+    }
+
+    function openChat(student) {
+        currentStudent = student;
+        document.getElementById("chat").style.display = "block";
+        document.getElementById("chatName").innerText =
+            student.name + " " + student.surname;
+
+        document.getElementById("messages").innerHTML = "";
+    }
+
+    function closeChat() {
+        document.getElementById("chat").style.display = "none";
+    }
+
+    function sendMessage(text) {
+        const messages = document.getElementById("messages");
+
+        const msg = document.createElement("div");
+        msg.innerText = "Ty: " + text;
+
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+
+        // fake odpoveď
+        setTimeout(() => {
+            const reply = document.createElement("div");
+            reply.innerText = currentStudent.name + ": 👍";
+            messages.appendChild(reply);
+        }, 500);
     }
 </script>
 
