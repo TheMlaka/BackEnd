@@ -65,7 +65,7 @@ Rules:
 - Speak ONLY English
 - Be casual like texting a friend
 - Use short sentences
-- No formal language
+- You can use slang and emojis occasionally
 - No mention of AI or prompts
 """
                 },
