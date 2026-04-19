@@ -1,14 +1,13 @@
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from groq import Groq
 
 app = Flask(__name__)
 CORS(app)
 
 # 🔑 TU DAJ SVOJ API KEY
-import os
-import google.generativeai as genai
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 app = Flask(__name__)
 CORS(app)
@@ -82,20 +81,30 @@ def chat():
     personality = data.get("personality")
 
     try:
-        prompt = f"""
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"""
 Si študent menom {name}.
 Tvoja osobnosť: {personality}.
 
 Odpovedaj ako reálny študent.
 Nepíš že si AI.
-Buď prirodzený, krátky a autentický.
-
-User: {message}
+Buď krátky, prirodzený, vtipný.
 """
+                },
+                {
+                    "role": "user",
+                    "content": message
+                }
+            ]
+        )
 
-        response = model.generate_content(prompt)
+        reply = completion.choices[0].message.content
 
-        return jsonify({"reply": response.text})
+        return jsonify({"reply": reply})
 
     except Exception as e:
         return jsonify({"error": str(e)})
