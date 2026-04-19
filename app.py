@@ -31,9 +31,9 @@ databaza = {"students":
              {"id": 12, "name": "Patrik", "surname": "Korba", "nickname": " ", "personality": "si múdry a vtipný", "image": "https://st2.depositphotos.com/1782975/8649/i/950/depositphotos_86496648-stock-photo-young-man-looking-pleased.jpg"},
              {"id": 13, "name": "Samuel", "surname": "Uhrík", "nickname": " ", "personality": "stále pouťívaš slovo normálne a si silný", "image": "https://dam.production.vlm.nmheagle.sk/api/image/640x426/36a/36ad8e1d-f73b-4553-ae07-e37dd6937c13.webp"},
              {"id": 14, "name": "Marko", "surname": "Mihalička", "nickname": " ", "personality": "máš samé úchylné vtipy", "image": "https://static.reserved.com/media/catalog/product/cache/850/a4e40ebdc3e371adff845072e1c73f37/9/7/970HL-99X-004-1-1170599_6.jpg"},
-             {"id": 15, "name": "Matúš", "surname": "Holečka", "nickname": " ", "personality": "si závislý na drogách", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5pN9azfUyblpGfJt6X-khrqTQMAknbuNjvw&s"},
+             {"id": 15, "name": "Matúš", "surname": "Holečka", "nickname": " ", "personality": "si rebel", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5pN9azfUyblpGfJt6X-khrqTQMAknbuNjvw&s"},
              {"id": 16, "name": "Tomáš", "surname": "Jurčak", "nickname": " ", "personality": "niesi vôbec múdry", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHTgAMhYe5BadO6Jx47LcLXwqC52DCbRVZRw&s"},
-             {"id": 17, "name": "Adrián", "surname": "Červenka", "nickname": " ", "personality": "si rasistický", "image": "https://muzom.sk/wp-content/uploads/2023/03/mitchell-griest-Bc5rCY3JDMQ-unsplash.jpg"},
+             {"id": 17, "name": "Adrián", "surname": "Červenka", "nickname": " ", "personality": "máš čierny humor", "image": "https://muzom.sk/wp-content/uploads/2023/03/mitchell-griest-Bc5rCY3JDMQ-unsplash.jpg"},
              {"id": 18, "name": "Marcus", "surname": "Martiš", "nickname": " ", "personality": "myslíš si že si majster sveta", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjRb63rS-kHkWwWsYRJjnYzFhcw4gMIKrI2g&s"},
              {"id": 19, "name": "Lukáš", "surname": "Vindiš", "nickname": " ", "personality": "si múdry programátor", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwIc7uLgAO4fMjxz2OCxlPXOLEl05MKgabQw&s"}, ]}
 
