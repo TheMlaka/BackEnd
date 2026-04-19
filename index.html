@@ -1,138 +1,100 @@
 <!DOCTYPE html>
 <html lang="sk">
 <head>
-<meta charset="UTF-8">
-<title>Študenti</title>
+    <meta charset="UTF-8">
+    <title>Študenti</title>
 
-<style>
-body {
-    font-family: Arial;
-    background: #f0f2f5;
-    text-align: center;
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            text-align: center;
+        }
 
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+        h1 {
+            margin: 20px;
+        }
 
-.card {
-    background: white;
-    width: 220px;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 12px;
-    cursor: pointer;
-}
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-.chat {
-    display: none;
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 320px;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-}
+        .card {
+            background: white;
+            width: 220px;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
 
-.messages {
-    height: 200px;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    text-align: left;
-}
-</style>
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 
 <body>
 
 <h1>Zoznam študentov</h1>
+
 <button onclick="loadStudents()">Načítať študentov</button>
 
 <div class="container" id="students"></div>
 
-<div class="chat" id="chat">
-    <h3 id="chatName"></h3>
-
-    <div class="messages" id="messages"></div>
-
-    <button onclick="sendMessage('Ahoj!')">Ahoj!</button>
-    <button onclick="sendMessage('Ako sa máš?')">Ako sa máš?</button>
-    <button onclick="sendMessage('Dovidenia!')">Dovidenia!</button>
-
-    <br><br>
-    <button onclick="closeChat()">Zavrieť</button>
-</div>
-
 <script>
-const STUDENT_API = "https://backend-8lo7.onrender.com/api";
-const CHAT_API = "http://localhost:3000/chat";
+    const API_URL = "https://backend-8lo7.onrender.com/api"; // 🔥 TU DÁŠ SVOJ BACKEND
 
-let currentStudent = null;
+    async function loadStudents() {
+        const container = document.getElementById("students");
+        container.innerHTML = "Načítavam...";
 
-async function loadStudents() {
-    const res = await fetch(STUDENT_API);
-    const data = await res.json();
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
 
-    const container = document.getElementById("students");
-    container.innerHTML = "";
+            container.innerHTML = "";
 
-    data.students.forEach(s => {
-        const div = document.createElement("div");
-        div.className = "card";
+            data.students.forEach(student => {
+                const div = document.createElement("div");
+                div.className = "card";
 
-        div.innerHTML = `
-            <img src="${s.image}" width="100%">
-            <h3>${s.name} ${s.surname}</h3>
-        `;
+                div.innerHTML = `
+                    <img src="${student.image}">
+                    <h3>${student.name} ${student.surname}</h3>
+                    <p><b>Prezývka:</b> ${student.nickname || "-"}</p>
+                `;
 
-        div.onclick = () => openChat(s);
-        container.appendChild(div);
-    });
-}
+                container.appendChild(div);
+            });
 
-function openChat(student) {
-    currentStudent = student;
-    document.getElementById("chat").style.display = "block";
-    document.getElementById("chatName").innerText =
-        student.name + " " + student.surname;
-    document.getElementById("messages").innerHTML = "";
-}
-
-function closeChat() {
-    document.getElementById("chat").style.display = "none";
-}
-
-async function sendMessage(text) {
-    const messages = document.getElementById("messages");
-
-    const myMsg = document.createElement("div");
-    myMsg.innerText = "Ty: " + text;
-    messages.appendChild(myMsg);
-
-    const res = await fetch(CHAT_API, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            message: text,
-            student: currentStudent.name
-        })
-    });
-
-    const data = await res.json();
-
-    const botMsg = document.createElement("div");
-    botMsg.innerText = currentStudent.name + ": " + data.reply;
-    messages.appendChild(botMsg);
-
-    messages.scrollTop = messages.scrollHeight;
-}
+        } catch (error) {
+            container.innerHTML = "❌ Nepodarilo sa načítať dáta";
+            console.error(error);
+        }
+    }
 </script>
 
 </body>
