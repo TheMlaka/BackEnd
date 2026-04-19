@@ -29,6 +29,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             transition: 0.2s;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -53,6 +54,38 @@
         button:hover {
             background: #0056b3;
         }
+
+        /* CHAT MODAL */
+        #chatModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        #chatBox {
+            background: white;
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        #chatMessages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #chatMessages div {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
@@ -64,12 +97,28 @@
 
 <div class="container" id="students"></div>
 
+<!-- CHAT -->
+<div id="chatModal">
+    <div id="chatBox">
+        <h2 id="chatTitle"></h2>
+
+        <div id="chatMessages"></div>
+
+        <input id="chatInput" placeholder="Napíš správu..." style="width:70%;">
+        <button onclick="sendMessage()">Odoslať</button>
+        <button onclick="closeChat()">Zavrieť</button>
+    </div>
+</div>
+
 <script>
-    const API_URL = "https://backend-8lo7.onrender.com/api"; // 🔥 TU DÁŠ SVOJ BACKEND
+    const API_URL = "https://backend-8lo7.onrender.com/api";
+    const CHAT_URL = "https://backend-8lo7.onrender.com/chat";
+
+    let currentStudent = null;
 
     async function loadStudents() {
         const container = document.getElementById("students");
-        container.innerHTML = "Načítavam...";
+        container.innerHTML = "⏳ Načítavam...";
 
         try {
             const response = await fetch(API_URL);
@@ -81,8 +130,10 @@
                 const div = document.createElement("div");
                 div.className = "card";
 
+                div.onclick = () => openChat(student);
+
                 div.innerHTML = `
-                    <img src="${student.image}">
+                    <img src="${student.image}" onerror="this.src='https://via.placeholder.com/220x150'">
                     <h3>${student.name} ${student.surname}</h3>
                     <p><b>Prezývka:</b> ${student.nickname || "-"}</p>
                 `;
@@ -92,6 +143,62 @@
 
         } catch (error) {
             container.innerHTML = "❌ Nepodarilo sa načítať dáta";
+            console.error(error);
+        }
+    }
+
+    function openChat(student) {
+        currentStudent = student;
+
+        document.getElementById("chatModal").style.display = "block";
+        document.getElementById("chatTitle").innerText =
+            `Chat s ${student.name}`;
+
+        document.getElementById("chatMessages").innerHTML = "";
+    }
+
+    function closeChat() {
+        document.getElementById("chatModal").style.display = "none";
+    }
+
+    function addMessage(sender, text) {
+        const chat = document.getElementById("chatMessages");
+        const msg = document.createElement("div");
+
+        msg.innerHTML = `<b>${sender}:</b> ${text}`;
+        chat.appendChild(msg);
+
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const text = input.value;
+
+        if (!text) return;
+
+        addMessage("Ty", text);
+        input.value = "";
+
+        try {
+            const response = await fetch(CHAT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: text,
+                    name: currentStudent.name,
+                    personality: currentStudent.personality
+                })
+            });
+
+            const data = await response.json();
+
+            addMessage(currentStudent.name, data.reply);
+
+        } catch (error) {
+            addMessage("Systém", "❌ Chyba pri komunikácii so serverom");
             console.error(error);
         }
     }
