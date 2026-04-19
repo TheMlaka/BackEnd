@@ -1,15 +1,29 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app)
 
 # 🔑 TU DAJ SVOJ API KEY
 import os
-from openai import OpenAI
+import google.generativeai as genai
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+app = Flask(__name__)
+CORS(app)
+
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+
+        response = model.generate_content(prompt)
+
+        return jsonify({"reply": response.text})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route('/')
@@ -68,34 +82,20 @@ def chat():
     personality = data.get("personality")
 
     try:
-        completion = client.chat.completions.create(
-            model="gpt-4.1-mini",
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"""
+        prompt = f"""
 Si študent menom {name}.
 Tvoja osobnosť: {personality}.
 
 Odpovedaj ako reálny študent.
 Nepíš že si AI.
 Buď prirodzený, krátky a autentický.
+
+User: {message}
 """
-                },
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
-        )
 
-        reply = completion.choices[0].message.content
+        response = model.generate_content(prompt)
 
-        return jsonify({"reply": reply})
+        return jsonify({"reply": response.text})
 
     except Exception as e:
         return jsonify({"error": str(e)})
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
