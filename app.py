@@ -6,7 +6,10 @@ app = Flask(__name__)
 CORS(app)
 
 # 🔑 TU DAJ SVOJ API KEY
-client = OpenAI(api_key="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")
+import os
+from openai import OpenAI
+
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 @app.route('/')
