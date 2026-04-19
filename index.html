@@ -195,7 +195,10 @@
 
             const data = await response.json();
 
-            addMessage(currentStudent.name, data.reply);
+            addMessage(
+    currentStudent.name,
+    data.reply || data.error || "❌ žiadna odpoveď"
+);
 
         } catch (error) {
             addMessage("Systém", "❌ Chyba pri komunikácii so serverom");
