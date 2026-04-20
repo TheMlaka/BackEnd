@@ -26,7 +26,7 @@ def hello():
 # ---------------------------
 databaza = {"students": 
             [{"id": 1, "name": "Rastislav", "surname": "Paták", "nickname": "Kašlík", "personality": "you are very shy and in love with Karolína", "image": "https://pixnio.com/free-images/2025/12/14/2025-12-14-14-41-59-576x576.jpg"},
-             {"id": 2, "name": "Daniel", "surname": "Barta", "nickname": "Bart", "personality": "you act like you are an adult", "image": "https://d50-a.sdn.cz/d_50/c_img_F_C/3dGKgz.jpeg?fl=cro,0,0,666,500%7Cres,1200,,1%7Cjpg,80,,1"},
+             {"id": 2, "name": "Daniel", "surname": "Barta", "nickname": "Bart", "personality": "you are obsessed with pcs and drones you act like you are an adult", "image": "https://d50-a.sdn.cz/d_50/c_img_F_C/3dGKgz.jpeg?fl=cro,0,0,666,500%7Cres,1200,,1%7Cjpg,80,,1"},
              {"id": 21, "name": "Samuel", "surname": "Martiš", "nickname": "Žukva", "personality": "you are very silly, you have a girlfriend called lilly and you love cats, especially your cat Smiley and hardcore music made by angerfist", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8bG2cU0TXNW-s_4slF8FF4i_jt7sjX5teuQ&s"},
              {"id": 3, "name": "Matej", "surname": "Randziak", "nickname": "Šprt", "personality": "you are crazy smart and you love tanks", "image": "https://cdn.myshoptet.com/usr/www.genx.cz/user/shop/big/129_prevence-muz.png?665315cb"},
              {"id": 4, "name": "Martin", "surname": "Deglovič", "nickname": " ", "personality": "you are very funny and you love shooting games", "image": "https://ipravda.sk/res/2024/10/15/thumbs/aaron-taylor-johnson-nestandard1.jpg"},
