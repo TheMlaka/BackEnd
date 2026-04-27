@@ -1,4 +1,5 @@
 import os
+import psycopg2
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from groq import Groq
@@ -129,7 +130,6 @@ Rules:
     except Exception as e:
         return jsonify({"error": str(e)})
 
-import psycopg2
 def main():
     conn = psycopg2.connect(database="mariadb_yri6",
                             user="mariadb_yri6_user",
