@@ -136,7 +136,7 @@ def main():
                             host="dpg-d7ng3t6gvqtc73ar4g00-a.frankfurt-postgres.render.com",
                             port=5432)
     
-    print("DATABASE CONNECTED!)
+    print("DATABASE CONNECTED!")
                             
 if __name__ == "__main__":
     app.run()
