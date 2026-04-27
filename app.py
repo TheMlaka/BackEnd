@@ -129,6 +129,7 @@ Rules:
     except Exception as e:
         return jsonify({"error": str(e)})
 
+import psycopg2
 def main():
     conn = psycopg2.connect(database="mariadb_yri6",
                             user="mariadb_yri6_user",
