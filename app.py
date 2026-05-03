@@ -186,6 +186,10 @@ Rules:
     except Exception as e:
         return jsonify({"error": str(e)})
 
+from database import create_table
+
+create_table()
+
 
 # ---------------------------
 # ▶️ RUN
