@@ -1,17 +1,7 @@
-import psycopg2
-
-def main():
-    conn = psycopg2.connect(
-        database="mariadb_yri6",
-        user="mariadb_yri6_user",
-        password="SEM_DAJ_NOVÉ_HESLO",
-        host="dpg-d7ng3t6gvqtc73ar4g00-a.frankfurt-postgres.render.com",
-        port=5432
-    )
-
+def create_table():
+    conn = psycopg2.connect(os.environ.get("DATABASE_URL"))
     cur = conn.cursor()
 
-    # 🧱 CREATE TABLE
     cur.execute("""
     CREATE TABLE IF NOT EXISTS students (
         id SERIAL PRIMARY KEY,
@@ -24,13 +14,7 @@ def main():
     """)
 
     conn.commit()
-
-    print("✅ TABLE CREATED!")
-
     cur.close()
     conn.close()
 
-
-# 👉 TOTO JE DÔLEŽITÉ
-if __name__ == "__main__":
-    main()
+    print("TABLE READY")
