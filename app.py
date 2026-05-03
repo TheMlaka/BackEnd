@@ -4,20 +4,25 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from groq import Groq
 
+from database import create_table, seed_data
+
 app = Flask(__name__)
 CORS(app)
 
 # 🔑 GROQ
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-# 🧠 RAM memory (resetne sa po reštarte)
+# 🧠 RAM memory
 memory = {}
 
-# ---------------------------
-# 🔌 DATABASE CONNECTION
-# ---------------------------
+# 🔌 DB
 def get_db():
     return psycopg2.connect(os.environ.get("DATABASE_URL"))
+
+
+# 🧱 INIT DB (pri štarte servera)
+create_table()
+seed_data()
 
 
 # ---------------------------
@@ -25,11 +30,11 @@ def get_db():
 # ---------------------------
 @app.route("/")
 def home():
-    return "Backend is running 🚀"
+    return "Backend running 🚀"
 
 
 # ---------------------------
-# 📋 GET ALL STUDENTS
+# 📋 GET ALL
 # ---------------------------
 @app.route("/api")
 def get_students():
@@ -57,7 +62,7 @@ def get_students():
 
 
 # ---------------------------
-# 🔍 GET STUDENT BY ID
+# 🔍 GET BY ID
 # ---------------------------
 @app.route("/api/student/<int:id>")
 def get_student(id):
@@ -80,11 +85,11 @@ def get_student(id):
             "image": row[5]
         })
 
-    return jsonify({"error": "Student not found"}), 404
+    return jsonify({"error": "Not found"}), 404
 
 
 # ---------------------------
-# ➕ ADD STUDENT
+# ➕ ADD
 # ---------------------------
 @app.route("/api/student", methods=["POST"])
 def add_student():
@@ -111,11 +116,11 @@ def add_student():
     cur.close()
     conn.close()
 
-    return jsonify({"message": "Student added", "id": new_id})
+    return jsonify({"message": "added", "id": new_id})
 
 
 # ---------------------------
-# ❌ DELETE STUDENT
+# ❌ DELETE
 # ---------------------------
 @app.route("/api/student/<int:id>", methods=["DELETE"])
 def delete_student(id):
@@ -128,11 +133,11 @@ def delete_student(id):
     cur.close()
     conn.close()
 
-    return jsonify({"message": "Student deleted"})
+    return jsonify({"message": "deleted"})
 
 
 # ---------------------------
-# 🧠 CHAT WITH MEMORY
+# 🧠 CHAT
 # ---------------------------
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -152,14 +157,10 @@ def chat():
             {
                 "role": "system",
                 "content": f"""
-You are a student named {name}.
+You are {name}.
 Personality: {personality}.
-
-Rules:
-- Speak ONLY English
-- Act like a real student
-- Be short and natural
-- Never say you are AI
+Speak only English.
+Be short and natural.
 """
             }
         ]
@@ -185,10 +186,6 @@ Rules:
 
     except Exception as e:
         return jsonify({"error": str(e)})
-
-from database import create_table
-
-create_table()
 
 
 # ---------------------------
