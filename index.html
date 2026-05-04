@@ -1,101 +1,128 @@
-<style>
-    body {
-        font-family: "Comic Sans MS", cursive, sans-serif;
-        background: linear-gradient(
-            to bottom,
-            #a8d8ff 0%,
-            #4fa3ff 40%,
-            #0a1f44 100%
-        );
-        text-align: center;
-        margin: 0;
-        min-height: 100vh;
-    }
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Študenti</title>
 
-    h1 {
-        margin: 20px;
-    }
+    <style>
+        body {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            background: linear-gradient(
+                to bottom,
+                #a8d8ff 0%,
+                #4fa3ff 40%,
+                #0a1f44 100%
+            );
+            text-align: center;
+            margin: 0;
+            min-height: 100vh;
+        }
 
-    .container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+        h1 {
+            margin: 20px;
+            color: white;
+        }
 
-    .card {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    width: 220px;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 15px;
+        /* GLASS CARD */
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
 
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            width: 220px;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 15px;
 
-    transition: all 0.3s ease;
-    cursor: pointer;
-    color: white;
-}
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 
-.card:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-}
+            transition: all 0.3s ease;
+            cursor: pointer;
+            color: white;
+        }
 
-    img {
-        width: 100%;
-        border-radius: 10px;
-    }
+        .card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+        }
 
-    button {
-        padding: 10px 20px;
-        margin: 15px;
-        border: none;
-        border-radius: 8px;
-        background: #007bff;
-        color: white;
-        cursor: pointer;
-    }
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
 
-    button:hover {
-        background: #0056b3;
-    }
+        button {
+            padding: 10px 20px;
+            margin: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
 
-    /* CHAT MODAL */
-    #chatModal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-    }
+        button:hover {
+            background: #0056b3;
+        }
 
-    #chatBox {
-        background: white;
-        width: 400px;
-        margin: 50px auto;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: left;
-    }
+        /* CHAT MODAL */
+        #chatModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
 
-    #chatMessages {
-        height: 200px;
-        overflow-y: auto;
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
+            justify-content: center;
+            align-items: center;
 
-    #chatMessages div {
-        margin-bottom: 5px;
-    }
-</style>
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #chatBox {
+            background: rgba(255, 255, 255, 0.95);
+            width: 400px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: left;
+
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        #chatModal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #chatModal.active #chatBox {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        #chatMessages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        #chatMessages div {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -127,7 +154,7 @@
 
     async function loadStudents() {
         const container = document.getElementById("students");
-        container.innerHTML = "⏳ Načítavam... (Môže to chvíľku trvať)";
+        container.innerHTML = "⏳ Načítavam...";
 
         try {
             const response = await fetch(API_URL);
@@ -159,7 +186,13 @@
     function openChat(student) {
         currentStudent = student;
 
-        document.getElementById("chatModal").style.display = "block";
+        const modal = document.getElementById("chatModal");
+        modal.style.display = "flex";
+
+        setTimeout(() => {
+            modal.classList.add("active");
+        }, 10);
+
         document.getElementById("chatTitle").innerText =
             `Chat s ${student.name}`;
 
@@ -167,7 +200,13 @@
     }
 
     function closeChat() {
-        document.getElementById("chatModal").style.display = "none";
+        const modal = document.getElementById("chatModal");
+
+        modal.classList.remove("active");
+
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
     }
 
     function addMessage(sender, text) {
@@ -205,9 +244,9 @@
             const data = await response.json();
 
             addMessage(
-    currentStudent.name,
-    data.reply || data.error || "❌ žiadna odpoveď"
-);
+                currentStudent.name,
+                data.reply || data.error || "❌ žiadna odpoveď"
+            );
 
         } catch (error) {
             addMessage("Systém", "❌ Chyba pri komunikácii so serverom");
