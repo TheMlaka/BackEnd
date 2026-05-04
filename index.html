@@ -105,7 +105,8 @@ h1 {
 }
 
 .card:hover {
-    transform: translateY(-5px) scale(1.05);
+    transform: scale(1.05);
+}
 }
 
 img {
@@ -143,6 +144,8 @@ button:hover {
 
     opacity: 0;
     transition: opacity 0.3s ease;
+
+    z-index: 1000; /* 👈 pridaj toto */
 }
 
 #chatBox {
