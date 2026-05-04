@@ -7,15 +7,20 @@
 <style>
 body {
     font-family: "Comic Sans MS", cursive, sans-serif;
-    background: linear-gradient(
-        to bottom,
-        #a8d8ff 0%,
-        #4fa3ff 40%,
-        #0a1f44 100%
-    );
     text-align: center;
     margin: 0;
     min-height: 100vh;
+
+    background: linear-gradient(
+        -45deg,
+        #0a1f44,
+        #4fa3ff,
+        #a8d8ff,
+        #1b2a6b
+    );
+
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
 }
 
 h1 {
